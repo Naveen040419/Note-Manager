@@ -12,10 +12,11 @@ export default function Search({ notes }){
         return ()=> clearTimeout(timer);
     }, [query]);
 
-    const filterNotes = notes.filter( (note) => 
-        note.title.toLowerCase().includes( debounceQuery.toLowerCase()) ||
-        note.description.toLowerCase().includes( debounceQuery.toLowerCase()) 
-    );
+    const filterNotes = debounceQuery ? notes.filter((note) =>
+      note.title.toLowerCase().includes(debounceQuery.toLowerCase()) ||
+      note.description.toLowerCase().includes(debounceQuery.toLowerCase())
+    )
+    : [];
 
     return(
         <div className="search">
@@ -28,14 +29,21 @@ export default function Search({ notes }){
                 </form> */}
             </div>
 
-            { filterNotes.length > 0 ? (<div className="search-data">
-
-                { filterNotes.map(( note) => <div key = {note.id}>
-                    <h2> {note.title} </h2>
-                    <h4> {note.description} </h4>
-                </div>)}
-
-            </div> ) : <div className="search-data"> <h1> No Data Found </h1></div>}
+            {debounceQuery === "" ? null : (
+            filterNotes.length > 0 ? (
+            <div className="search-data">
+            {filterNotes.map((note) => (
+            <div key={note.id}>
+            <h2>{note.title}</h2>
+            <h4>{note.description}</h4>
+            </div>
+            ))}
+            </div>
+            ) : (
+            <div className="search-data">
+            <h1>No Data Found</h1>
+            </div>
+            ))}  
         </div>
     )
 }
